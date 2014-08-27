@@ -168,7 +168,7 @@ abstract class Mustache_Template
      *
      * @return string
      */
-    protected function resolveValue(string $value, Mustache_Context $context, string $indent = '') : string
+    protected function resolveValue(mixed $value, Mustache_Context $context, string $indent = '') : string
     {
         if (($this->strictCallables ? is_object($value) : !is_string($value)) && is_callable($value)) {
             return $this->mustache
