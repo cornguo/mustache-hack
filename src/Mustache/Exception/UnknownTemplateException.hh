@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -14,18 +14,18 @@
  */
 class Mustache_Exception_UnknownTemplateException extends InvalidArgumentException implements Mustache_Exception
 {
-    protected $templateName;
+    protected string $templateName = '';
 
     /**
      * @param string $templateName
      */
-    public function __construct($templateName)
+    public function __construct(string $templateName)
     {
         $this->templateName = $templateName;
         parent::__construct(sprintf('Unknown template: %s', $templateName));
     }
 
-    public function getTemplateName()
+    public function getTemplateName() : string
     {
         return $this->templateName;
     }

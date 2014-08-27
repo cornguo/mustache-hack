@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -24,7 +24,7 @@ interface Mustache_Cache
      *
      * @return boolean indicates successfully class load
      */
-    public function load($key);
+    public function load(string $key) : bool;
 
     /**
      * Cache and load a compiled Mustache_Template class.
@@ -34,5 +34,5 @@ interface Mustache_Cache
      *
      * @return void
      */
-    public function cache($key, $value);
+    public function cache(string $key, string $value) : void;
 }

@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -14,13 +14,13 @@
  */
 class Mustache_Exception_SyntaxException extends LogicException implements Mustache_Exception
 {
-    protected $token;
+    protected mixed $token;
 
     /**
      * @param string $msg
      * @param array  $token
      */
-    public function __construct($msg, array $token)
+    public function __construct(string $msg, mixed $token)
     {
         $this->token = $token;
         parent::__construct($msg);
@@ -29,7 +29,7 @@ class Mustache_Exception_SyntaxException extends LogicException implements Musta
     /**
      * @return array
      */
-    public function getToken()
+    public function getToken() : mixed
     {
         return $this->token;
     }

@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -14,18 +14,18 @@
  */
 class Mustache_Exception_UnknownHelperException extends InvalidArgumentException implements Mustache_Exception
 {
-    protected $helperName;
+    protected string $helperName = '';
 
     /**
      * @param string $helperName
      */
-    public function __construct($helperName)
+    public function __construct(string $helperName)
     {
         $this->helperName = $helperName;
         parent::__construct(sprintf('Unknown helper: %s', $helperName));
     }
 
-    public function getHelperName()
+    public function getHelperName() : string
     {
         return $this->helperName;
     }

@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.

@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -14,17 +14,17 @@
  */
 class Mustache_Autoloader
 {
-    private $baseDir;
+    private string $baseDir;
 
     /**
      * Autoloader constructor.
      *
      * @param string $baseDir Mustache library base directory (default: dirname(__FILE__).'/..')
      */
-    public function __construct($baseDir = null)
+    public function __construct(?string $baseDir = null) : void
     {
         if ($baseDir === null) {
-            $baseDir = dirname(__FILE__).'/..';
+            $baseDir = (string)dirname(__FILE__).'/..';
         }
 
         // realpath doesn't always work, for example, with stream URIs
@@ -43,7 +43,7 @@ class Mustache_Autoloader
      *
      * @return Mustache_Autoloader Registered Autoloader instance
      */
-    public static function register($baseDir = null)
+    public static function register(?string $baseDir = null) : Mustache_Autoloader
     {
         $loader = new self($baseDir);
         spl_autoload_register(array($loader, 'autoload'));
@@ -56,7 +56,7 @@ class Mustache_Autoloader
      *
      * @param string $class
      */
-    public function autoload($class)
+    public function autoload(string $class) : void
     {
         if ($class[0] === '\\') {
             $class = substr($class, 1);
@@ -66,7 +66,7 @@ class Mustache_Autoloader
             return;
         }
 
-        $file = sprintf('%s/%s.php', $this->baseDir, str_replace('_', '/', $class));
+        $file = sprintf('%s/%s.hh', $this->baseDir, str_replace('_', '/', $class));
         if (is_file($file)) {
             require $file;
         }

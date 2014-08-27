@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -24,7 +24,7 @@ class Mustache_Cache_NoopCache extends Mustache_Cache_AbstractCache
      *
      * @return boolean
      */
-    public function load($key)
+    public function load(string $key) : bool
     {
         return false;
     }
@@ -37,7 +37,7 @@ class Mustache_Cache_NoopCache extends Mustache_Cache_AbstractCache
      *
      * @return void
      */
-    public function cache($key, $value)
+    public function cache(string $key, string $value) : void
     {
         $this->log(
             Mustache_Logger::WARNING,

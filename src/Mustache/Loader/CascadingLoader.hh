@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -15,7 +15,7 @@
  */
 class Mustache_Loader_CascadingLoader implements Mustache_Loader
 {
-    private $loaders;
+    private Vector<Mustache_Loader> $loaders;
 
     /**
      * Construct a CascadingLoader with an array of loaders:
@@ -27,9 +27,9 @@ class Mustache_Loader_CascadingLoader implements Mustache_Loader
      *
      * @param Mustache_Loader[] $loaders
      */
-    public function __construct(array $loaders = array())
+    public function __construct(Vector<Mustache_Loader> $loaders = Vector{})
     {
-        $this->loaders = array();
+        $this->loaders = Vector{};
         foreach ($loaders as $loader) {
             $this->addLoader($loader);
         }
@@ -40,7 +40,7 @@ class Mustache_Loader_CascadingLoader implements Mustache_Loader
      *
      * @param Mustache_Loader $loader
      */
-    public function addLoader(Mustache_Loader $loader)
+    public function addLoader(Mustache_Loader $loader) : void
     {
         $this->loaders[] = $loader;
     }
@@ -54,7 +54,7 @@ class Mustache_Loader_CascadingLoader implements Mustache_Loader
      *
      * @return string Mustache Template source
      */
-    public function load($name)
+    public function load(string $name) : string
     {
         foreach ($this->loaders as $loader) {
             try {

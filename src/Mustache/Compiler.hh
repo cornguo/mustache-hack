@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -17,15 +17,15 @@
 class Mustache_Compiler
 {
 
-    private $pragmas;
-    private $defaultPragmas = array();
-    private $sections;
-    private $source;
-    private $indentNextLine;
-    private $customEscape;
-    private $entityFlags;
-    private $charset;
-    private $strictCallables;
+    private array $pragmas = array();
+    private array $defaultPragmas = array();
+    private array $sections = array();
+    private string $source = '';
+    private bool $indentNextLine = true;
+    private bool $customEscape = false;
+    private int $entityFlags = ENT_COMPAT;
+    private string $charset = 'UTF-8';
+    private bool $strictCallables = false;
 
     /**
      * Compile a Mustache token parse tree into PHP source code.
@@ -40,7 +40,7 @@ class Mustache_Compiler
      *
      * @return string Generated PHP source code
      */
-    public function compile($source, array $tree, $name, $customEscape = false, $charset = 'UTF-8', $strictCallables = false, $entityFlags = ENT_COMPAT)
+    public function compile(string $source, array $tree, string $name, bool $customEscape = false, string $charset = 'UTF-8', bool $strictCallables = false, int $entityFlags = ENT_COMPAT) : string
     {
         $this->pragmas         = $this->defaultPragmas;
         $this->sections        = array();
@@ -62,7 +62,7 @@ class Mustache_Compiler
      *
      * @param string[] $pragmas
      */
-    public function setPragmas(array $pragmas)
+    public function setPragmas(array $pragmas) : void
     {
         $this->pragmas = array();
         foreach ($pragmas as $pragma) {
@@ -81,7 +81,7 @@ class Mustache_Compiler
      *
      * @return string Generated PHP source code
      */
-    private function walk(array $tree, $level = 0)
+    private function walk(array $tree, int $level = 0) : string
     {
         $code = '';
         $level++;
@@ -222,15 +222,15 @@ class Mustache_Compiler
      *
      * @return string Generated PHP source code
      */
-    private function writeCode($tree, $name)
+    private function writeCode(array $tree, string $name) : string
     {
         $code     = $this->walk($tree);
         $sections = implode("\n", $this->sections);
-        $klass    = empty($this->sections) ? self::KLASS_NO_LAMBDAS : self::KLASS;
+        $klass    = (0 === count($this->sections)) ? self::KLASS_NO_LAMBDAS : self::KLASS;
 
         $callable = $this->strictCallables ? $this->prepare(self::STRICT_CALLABLE) : '';
 
-        return sprintf($this->prepare($klass, 0, false, true), $name, $callable, $code, $sections);
+        return sprintf(format_i($this->prepare($klass, 0, false, true)), $name, $callable, $code, $sections);
     }
 
     const BLOCK_VAR = '
@@ -255,11 +255,11 @@ class Mustache_Compiler
      *
      * @return string Generated PHP source code
      */
-    private function blockVar($nodes, $id, $start, $end, $otag, $ctag, $level)
+    private function blockVar(array $nodes, string $id, int $start, int $end, string $otag, string $ctag, int $level) : string
     {
         $id = var_export($id, true);
 
-        return sprintf($this->prepare(self::BLOCK_VAR, $level), $id, $this->walk($nodes, 2));
+        return sprintf(format_i($this->prepare(self::BLOCK_VAR, $level)), $id, $this->walk($nodes, 2));
     }
 
     const BLOCK_ARG = '
@@ -281,12 +281,12 @@ class Mustache_Compiler
      *
      * @return string Generated PHP source code
      */
-    private function blockArg($nodes, $id, $start, $end, $otag, $ctag, $level)
+    private function blockArg(array $nodes, string $id, int $start, int $end, string $otag, string $ctag, int $level) : string
     {
         $key = $this->section($nodes, $id, array(), $start, $end, $otag, $ctag, $level, true);
         $id  = var_export($id, true);
 
-        return sprintf($this->prepare(self::BLOCK_ARG, $level), $id, $key, $id, $this->flushIndent());
+        return sprintf(format_i($this->prepare(self::BLOCK_ARG, $level)), $id, $key, $id, $this->flushIndent());
     }
 
     const SECTION_CALL = '
@@ -336,7 +336,7 @@ class Mustache_Compiler
      *
      * @return string Generated section PHP source code
      */
-    private function section($nodes, $id, $filters, $start, $end, $otag, $ctag, $level, $arg = false)
+    private function section(array $nodes, string $id, array $filters, int $start, int $end, string $otag, string $ctag, int $level, bool $arg = false) : string
     {
         $source   = var_export(substr($this->source, $start, $end - $start), true);
         $callable = $this->getCallable();
@@ -350,7 +350,7 @@ class Mustache_Compiler
         $key = ucfirst(md5($delims."\n".$source));
 
         if (!isset($this->sections[$key])) {
-            $this->sections[$key] = sprintf($this->prepare(self::SECTION), $key, $callable, $source, $delims, $this->walk($nodes, 2));
+            $this->sections[$key] = sprintf(format_i($this->prepare(self::SECTION)), $key, $callable, $source, $delims, $this->walk($nodes, 2));
         }
 
         if ($arg === true) {
@@ -360,7 +360,7 @@ class Mustache_Compiler
             $id      = var_export($id, true);
             $filters = $this->getFilters($filters, $level);
 
-            return sprintf($this->prepare(self::SECTION_CALL, $level), $id, $method, $id, $filters, $key);
+            return sprintf(format_i($this->prepare(self::SECTION_CALL, $level)), $id, $method, $id, $filters, $key);
         }
     }
 
@@ -381,13 +381,13 @@ class Mustache_Compiler
      *
      * @return string Generated inverted section PHP source code
      */
-    private function invertedSection($nodes, $id, $filters, $level)
+    private function invertedSection(array $nodes, string $id, array $filters, int $level) : string
     {
         $method  = $this->getFindMethod($id);
         $id      = var_export($id, true);
         $filters = $this->getFilters($filters, $level);
 
-        return sprintf($this->prepare(self::INVERTED_SECTION, $level), $id, $method, $id, $filters, $this->walk($nodes, $level));
+        return sprintf(format_i($this->prepare(self::INVERTED_SECTION, $level)), $id, $method, $id, $filters, $this->walk($nodes, $level));
     }
 
     const PARTIAL_INDENT = ', $indent . %s';
@@ -406,16 +406,16 @@ class Mustache_Compiler
      *
      * @return string Generated partial call PHP source code
      */
-    private function partial($id, $indent, $level)
+    private function partial(string $id, string $indent, int $level) : string
     {
         if ($indent !== '') {
-            $indentParam = sprintf(self::PARTIAL_INDENT, var_export($indent, true));
+            $indentParam = sprintf(format_i(self::PARTIAL_INDENT), var_export($indent, true));
         } else {
             $indentParam = '';
         }
 
         return sprintf(
-            $this->prepare(self::PARTIAL, $level),
+            format_i($this->prepare(self::PARTIAL, $level)),
             var_export($id, true),
             $indentParam
         );
@@ -441,12 +441,12 @@ class Mustache_Compiler
      *
      * @return string Generated PHP source code
      */
-    private function parent($id, $indent, array $children, $level)
+    private function parent(string $id, string $indent, array $children, int $level) : string
     {
         $realChildren = array_filter($children, array(__CLASS__, 'onlyBlockArgs'));
 
         return sprintf(
-            $this->prepare(self::PARENT, $level),
+            format_i($this->prepare(self::PARENT, $level)),
             $this->walk($realChildren, $level),
             var_export($id, true),
             var_export($indent, true)
@@ -460,7 +460,7 @@ class Mustache_Compiler
      *
      * @return boolean True if $node is a block arg token.
      */
-    private static function onlyBlockArgs(array $node)
+    private static function onlyBlockArgs(array $node) : bool
     {
         return $node[Mustache_Tokenizer::TYPE] === Mustache_Tokenizer::T_BLOCK_ARG;
     }
@@ -480,14 +480,14 @@ class Mustache_Compiler
      *
      * @return string Generated variable interpolation PHP source
      */
-    private function variable($id, $filters, $escape, $level)
+    private function variable(string $id, array $filters, bool $escape, int $level) : string
     {
         $method  = $this->getFindMethod($id);
         $id      = ($method !== 'last') ? var_export($id, true) : '';
         $filters = $this->getFilters($filters, $level);
         $value   = $escape ? $this->getEscape() : '$value';
 
-        return sprintf($this->prepare(self::VARIABLE, $level), $method, $id, $filters, $this->flushIndent(), $value);
+        return sprintf(format_i($this->prepare(self::VARIABLE, $level)), $method, $id, $filters, $this->flushIndent(), $value);
     }
 
     const FILTER = '
@@ -506,7 +506,7 @@ class Mustache_Compiler
      *
      * @return string Generated filter PHP source
      */
-    private function getFilters(array $filters, $level)
+    private function getFilters(array $filters, int $level) : string
     {
         if (empty($filters)) {
             return '';
@@ -518,7 +518,7 @@ class Mustache_Compiler
         $callable = $this->getCallable('$filter');
         $msg      = var_export($name, true);
 
-        return sprintf($this->prepare(self::FILTER, $level), $method, $filter, $callable, $msg, $this->getFilters($filters, $level));
+        return sprintf(format_i($this->prepare(self::FILTER, $level)), $method, $filter, $callable, $msg, $this->getFilters($filters, $level));
     }
 
     const LINE = '$buffer .= "\n";';
@@ -532,10 +532,10 @@ class Mustache_Compiler
      *
      * @return string Generated output Buffer call PHP source
      */
-    private function text($text, $level)
+    private function text(string $text, int $level) : string
     {
         $indentNextLine = (substr($text, -1) === "\n");
-        $code = sprintf($this->prepare(self::TEXT, $level), $this->flushIndent(), var_export($text, true));
+        $code = sprintf(format_i($this->prepare(self::TEXT, $level)), $this->flushIndent(), var_export($text, true));
         $this->indentNextLine = $indentNextLine;
 
         return $code;
@@ -551,7 +551,7 @@ class Mustache_Compiler
      *
      * @return string PHP source code snippet
      */
-    private function prepare($text, $bonus = 0, $prependNewline = true, $appendNewline = false)
+    private function prepare(string $text, int $bonus = 0, bool $prependNewline = true, bool $appendNewline = false) : string
     {
         $text = ($prependNewline ? "\n" : '').trim($text);
         if ($prependNewline) {
@@ -574,13 +574,13 @@ class Mustache_Compiler
      *
      * @return string Either a custom callback, or an inline call to `htmlspecialchars`
      */
-    private function getEscape($value = '$value')
+    private function getEscape(string $value = '$value') : string
     {
         if ($this->customEscape) {
-            return sprintf(self::CUSTOM_ESCAPE, $value);
+            return sprintf(format_i(self::CUSTOM_ESCAPE), $value);
         }
 
-        return sprintf(self::DEFAULT_ESCAPE, $value, var_export($this->entityFlags, true), var_export($this->charset, true));
+        return sprintf(format_i(self::DEFAULT_ESCAPE), $value, var_export($this->entityFlags, true), var_export($this->charset, true));
     }
 
     /**
@@ -596,7 +596,7 @@ class Mustache_Compiler
      *
      * @return string `find` method name
      */
-    private function getFindMethod($id)
+    private function getFindMethod(string $id) : string
     {
         if ($id === '.') {
             return 'last';
@@ -619,11 +619,11 @@ class Mustache_Compiler
      *
      * @return string "is callable" logic
      */
-    private function getCallable($variable = '$value')
+    private function getCallable(string $variable = '$value') : string
     {
         $tpl = $this->strictCallables ? self::STRICT_IS_CALLABLE : self::IS_CALLABLE;
 
-        return sprintf($tpl, $variable, $variable);
+        return sprintf(format_i($tpl), $variable, $variable);
     }
 
     const LINE_INDENT = '$indent . ';
@@ -633,7 +633,7 @@ class Mustache_Compiler
      *
      * @return string "$indent . " or ""
      */
-    private function flushIndent()
+    private function flushIndent() : string
     {
         if (!$this->indentNextLine) {
             return '';

@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -10,9 +10,9 @@
  */
 
 /**
- * Runtime exception.
+ * A Mustache Exception interface.
  */
-class Mustache_Exception_RuntimeException extends RuntimeException implements Mustache_Exception
+interface Mustache_Exception
 {
     // This space intentionally left blank.
 }

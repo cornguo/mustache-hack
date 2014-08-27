@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -26,14 +26,14 @@
  */
 class Mustache_Loader_ArrayLoader implements Mustache_Loader, Mustache_Loader_MutableLoader
 {
-    private $templates;
+    private array<string, string> $templates;
 
     /**
      * ArrayLoader constructor.
      *
      * @param array $templates Associative array of Template source (default: array())
      */
-    public function __construct(array $templates = array())
+    public function __construct(array<string, string> $templates = array()) : void
     {
         $this->templates = $templates;
     }
@@ -47,7 +47,7 @@ class Mustache_Loader_ArrayLoader implements Mustache_Loader, Mustache_Loader_Mu
      *
      * @return string Mustache Template source
      */
-    public function load($name)
+    public function load(string $name) : string
     {
         if (!isset($this->templates[$name])) {
             throw new Mustache_Exception_UnknownTemplateException($name);
@@ -61,7 +61,7 @@ class Mustache_Loader_ArrayLoader implements Mustache_Loader, Mustache_Loader_Mu
      *
      * @param array $templates
      */
-    public function setTemplates(array $templates)
+    public function setTemplates(array<string, string> $templates) : void
     {
         $this->templates = $templates;
     }
@@ -72,7 +72,7 @@ class Mustache_Loader_ArrayLoader implements Mustache_Loader, Mustache_Loader_Mu
      * @param string $name
      * @param string $template Mustache Template source
      */
-    public function setTemplate($name, $template)
+    public function setTemplate(string $name, string $template) : void
     {
         $this->templates[$name] = $template;
     }

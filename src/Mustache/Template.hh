@@ -1,4 +1,4 @@
-<?php
+<?hh // decl
 
 /*
  * This file is part of Mustache.php.
@@ -19,19 +19,19 @@ abstract class Mustache_Template
     /**
      * @var Mustache_Engine
      */
-    protected $mustache;
+    protected Mustache_Engine $mustache;
 
     /**
      * @var boolean
      */
-    protected $strictCallables = false;
+    protected bool $strictCallables = false;
 
     /**
      * Mustache Template constructor.
      *
      * @param Mustache_Engine $mustache
      */
-    public function __construct(Mustache_Engine $mustache)
+    public function __construct(Mustache_Engine $mustache) : void
     {
         $this->mustache = $mustache;
     }
@@ -49,7 +49,7 @@ abstract class Mustache_Template
      *
      * @return string Rendered template
      */
-    public function __invoke($context = array())
+    public function __invoke(mixed $context = array()) : string
     {
         return $this->render($context);
     }
@@ -61,7 +61,7 @@ abstract class Mustache_Template
      *
      * @return string Rendered template
      */
-    public function render($context = array())
+    public function render(mixed $context = array()) : string
     {
         return $this->renderInternal(
             $this->prepareContextStack($context)
@@ -80,7 +80,7 @@ abstract class Mustache_Template
      *
      * @return string Rendered template
      */
-    abstract public function renderInternal(Mustache_Context $context, $indent = '');
+    abstract public function renderInternal(Mustache_Context $context, string $indent = '') : string;
 
     /**
      * Tests whether a value should be iterated over (e.g. in a section context).
@@ -111,7 +111,7 @@ abstract class Mustache_Template
      *
      * @return boolean True if the value is 'iterable'
      */
-    protected function isIterable($value)
+    protected function isIterable(KeyTraversable<int, mixed> $value) : bool
     {
         switch (gettype($value)) {
             case 'object':
@@ -141,7 +141,7 @@ abstract class Mustache_Template
      *
      * @return Mustache_Context
      */
-    protected function prepareContextStack($context = null)
+    protected function prepareContextStack(mixed $context = null) : Mustache_Context
     {
         $stack = new Mustache_Context();
 
@@ -168,7 +168,7 @@ abstract class Mustache_Template
      *
      * @return string
      */
-    protected function resolveValue($value, Mustache_Context $context, $indent = '')
+    protected function resolveValue(string $value, Mustache_Context $context, string $indent = '') : string
     {
         if (($this->strictCallables ? is_object($value) : !is_string($value)) && is_callable($value)) {
             return $this->mustache

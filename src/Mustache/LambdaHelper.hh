@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -18,8 +18,8 @@
  */
 class Mustache_LambdaHelper
 {
-    private $mustache;
-    private $context;
+    private Mustache_Engine $mustache;
+    private Mustache_Context $context;
 
     /**
      * Mustache Lambda Helper constructor.
@@ -40,7 +40,7 @@ class Mustache_LambdaHelper
      *
      * @return string Rendered template.
      */
-    public function render($string)
+    public function render(string $string) : string
     {
         return $this->mustache
             ->loadLambda((string) $string)

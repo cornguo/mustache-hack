@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -14,7 +14,7 @@
  */
 class Mustache_HelperCollection
 {
-    private $helpers = array();
+    private array<mixed, mixed> $helpers = array();
 
     /**
      * Helper Collection constructor.
@@ -25,7 +25,7 @@ class Mustache_HelperCollection
      *
      * @param array|Traversable $helpers (default: null)
      */
-    public function __construct($helpers = null)
+    public function __construct(?KeyedTraversable<string, mixed> $helpers = null) : void
     {
         if ($helpers === null) {
             return;
@@ -48,7 +48,7 @@ class Mustache_HelperCollection
      * @param string $name
      * @param mixed  $helper
      */
-    public function __set($name, $helper)
+    public function __set(string $name, mixed $helper) : void
     {
         $this->add($name, $helper);
     }
@@ -59,7 +59,7 @@ class Mustache_HelperCollection
      * @param string $name
      * @param mixed  $helper
      */
-    public function add($name, $helper)
+    public function add(string $name, mixed $helper) : void
     {
         $this->helpers[$name] = $helper;
     }
@@ -73,7 +73,7 @@ class Mustache_HelperCollection
      *
      * @return mixed Helper
      */
-    public function __get($name)
+    public function __get(string $name) : mixed
     {
         return $this->get($name);
     }
@@ -87,7 +87,7 @@ class Mustache_HelperCollection
      *
      * @return mixed Helper
      */
-    public function get($name)
+    public function get(string $name) : mixed
     {
         if (!$this->has($name)) {
             throw new Mustache_Exception_UnknownHelperException($name);
@@ -105,7 +105,7 @@ class Mustache_HelperCollection
      *
      * @return boolean True if helper is present
      */
-    public function __isset($name)
+    public function __isset(string $name) : bool
     {
         return $this->has($name);
     }
@@ -117,7 +117,7 @@ class Mustache_HelperCollection
      *
      * @return boolean True if helper is present
      */
-    public function has($name)
+    public function has(string $name) : bool
     {
         return array_key_exists($name, $this->helpers);
     }
@@ -129,7 +129,7 @@ class Mustache_HelperCollection
      *
      * @param string $name
      */
-    public function __unset($name)
+    public function __unset(string $name) : void
     {
         $this->remove($name);
     }
@@ -141,7 +141,7 @@ class Mustache_HelperCollection
      *
      * @param string $name
      */
-    public function remove($name)
+    public function remove(string $name) : void
     {
         if (!$this->has($name)) {
             throw new Mustache_Exception_UnknownHelperException($name);
@@ -155,7 +155,7 @@ class Mustache_HelperCollection
      *
      * Removes all helpers from this collection
      */
-    public function clear()
+    public function clear() : void
     {
         $this->helpers = array();
     }
@@ -165,7 +165,7 @@ class Mustache_HelperCollection
      *
      * @return boolean True if the collection is empty
      */
-    public function isEmpty()
+    public function isEmpty() : bool
     {
         return empty($this->helpers);
     }

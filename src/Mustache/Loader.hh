@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -23,5 +23,5 @@ interface Mustache_Loader
      *
      * @return string Mustache Template source
      */
-    public function load($name);
+    public function load(string $name) : string;
 }

@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -21,8 +21,8 @@
  */
 class Mustache_Cache_FilesystemCache extends Mustache_Cache_AbstractCache
 {
-    private $baseDir;
-    private $fileMode;
+    private string $baseDir = '';
+    private ?int $fileMode = NULL;
 
     /**
      * Filesystem cache constructor.
@@ -30,7 +30,7 @@ class Mustache_Cache_FilesystemCache extends Mustache_Cache_AbstractCache
      * @param string $baseDir  Directory for compiled templates.
      * @param int    $fileMode Override default permissions for cache files. Defaults to using the system-defined umask.
      */
-    public function __construct($baseDir, $fileMode = null)
+    public function __construct(string $baseDir, ?int $fileMode = null) : void
     {
         $this->baseDir = $baseDir;
         $this->fileMode = $fileMode;
@@ -43,7 +43,7 @@ class Mustache_Cache_FilesystemCache extends Mustache_Cache_AbstractCache
      *
      * @return boolean
      */
-    public function load($key)
+    public function load(string $key) : bool
     {
         $fileName = $this->getCacheFilename($key);
         if (!is_file($fileName)) {
@@ -63,7 +63,7 @@ class Mustache_Cache_FilesystemCache extends Mustache_Cache_AbstractCache
      *
      * @return void
      */
-    public function cache($key, $value)
+    public function cache(string $key, string $value) : void
     {
         $fileName = $this->getCacheFilename($key);
 
@@ -85,7 +85,7 @@ class Mustache_Cache_FilesystemCache extends Mustache_Cache_AbstractCache
      *
      * @return string
      */
-    protected function getCacheFilename($name)
+    protected function getCacheFilename(string $name) : string
     {
         return sprintf('%s/%s.php', $this->baseDir, $name);
     }
@@ -99,7 +99,7 @@ class Mustache_Cache_FilesystemCache extends Mustache_Cache_AbstractCache
      *
      * @return string
      */
-    private function buildDirectoryForFilename($fileName)
+    private function buildDirectoryForFilename(string $fileName) : string
     {
         $dirName = dirname($fileName);
         if (!is_dir($dirName)) {
@@ -128,7 +128,7 @@ class Mustache_Cache_FilesystemCache extends Mustache_Cache_AbstractCache
      *
      * @return void
      */
-    private function writeFile($fileName, $value)
+    private function writeFile(string $fileName, string $value) : void
     {
         $dirName = $this->buildDirectoryForFilename($fileName);
 

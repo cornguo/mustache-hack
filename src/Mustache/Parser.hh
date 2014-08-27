@@ -1,4 +1,4 @@
-<?php
+<?hh // decl
 
 /*
  * This file is part of Mustache.php.
@@ -16,13 +16,13 @@
  */
 class Mustache_Parser
 {
-    private $lineNum;
-    private $lineTokens;
-    private $pragmas;
-    private $defaultPragmas = array();
+    private int $lineNum = -1;
+    private int $lineTokens = 0;
+    private array $pragmas = array();
+    private array $defaultPragmas = array();
 
-    private $pragmaFilters;
-    private $pragmaBlocks;
+    private bool $pragmaFilters = false;
+    private bool $pragmaBlocks = false;
 
     /**
      * Process an array of Mustache tokens and convert them into a parse tree.
@@ -31,7 +31,7 @@ class Mustache_Parser
      *
      * @return array Mustache token parse tree
      */
-    public function parse(array $tokens = array())
+    public function parse(array $tokens = array()) //: array
     {
         $this->lineNum    = -1;
         $this->lineTokens = 0;
@@ -51,7 +51,7 @@ class Mustache_Parser
      *
      * @param string[] $pragmas
      */
-    public function setPragmas(array $pragmas)
+    public function setPragmas(array $pragmas) : void
     {
         $this->pragmas = array();
         foreach ($pragmas as $pragma) {
@@ -70,7 +70,7 @@ class Mustache_Parser
      *
      * @return array Mustache Token parse tree
      */
-    private function buildTree(array &$tokens, array $parent = null)
+    private function buildTree(array &$tokens = array(), ?array $parent = null) //: array
     {
         $nodes = array();
 
@@ -200,11 +200,11 @@ class Mustache_Parser
      *
      * @return array|null Resulting indent token, if any.
      */
-    private function clearStandaloneLines(array &$nodes, array &$tokens)
+    private function clearStandaloneLines(array &$nodes, array &$tokens) //: array
     {
         if ($this->lineTokens > 1) {
             // this is the third or later node on this line, so it can't be standalone
-            return;
+            return null;
         }
 
         $prev = null;
@@ -213,7 +213,7 @@ class Mustache_Parser
             // unless the previous node is whitespace.
             if ($prev = end($nodes)) {
                 if (!$this->tokenIsWhitespace($prev)) {
-                    return;
+                    return null;
                 }
             }
         }
@@ -221,19 +221,19 @@ class Mustache_Parser
         if ($next = reset($tokens)) {
             // If we're on a new line, bail.
             if ($next[Mustache_Tokenizer::LINE] !== $this->lineNum) {
-                return;
+                return null;
             }
 
             // If the next token isn't whitespace, bail.
             if (!$this->tokenIsWhitespace($next)) {
-                return;
+                return null;
             }
 
             if (count($tokens) !== 1) {
                 // Unless it's the last token in the template, the next token
                 // must end in newline for this to be standalone.
                 if (substr($next[Mustache_Tokenizer::VALUE], -1) !== "\n") {
-                    return;
+                    return null;
                 }
             }
 
@@ -256,10 +256,10 @@ class Mustache_Parser
      *
      * @return boolean True if token is a whitespace token
      */
-    private function tokenIsWhitespace(array $token)
+    private function tokenIsWhitespace(array $token) : bool
     {
         if ($token[Mustache_Tokenizer::TYPE] === Mustache_Tokenizer::T_TEXT) {
-            return preg_match('/^\s*$/', $token[Mustache_Tokenizer::VALUE]);
+            return (false !== preg_match('/^\s*$/', $token[Mustache_Tokenizer::VALUE]))? true:false;
         }
 
         return false;
@@ -273,7 +273,7 @@ class Mustache_Parser
      * @param array|null $parent
      * @param array      $token
      */
-    private function checkIfTokenIsAllowedInParent($parent, array $token)
+    private function checkIfTokenIsAllowedInParent(?array $parent, array $token) : void
     {
         if ($parent[Mustache_Tokenizer::TYPE] === Mustache_Tokenizer::T_PARENT) {
             throw new Mustache_Exception_SyntaxException('Illegal content in < parent tag', $token);
@@ -287,7 +287,7 @@ class Mustache_Parser
      *
      * @return array [Tag name, Array of filters]
      */
-    private function getNameAndFilters($name)
+    private function getNameAndFilters(string $name) //: array
     {
         $filters = array_map('trim', explode('|', $name));
         $name    = array_shift($filters);
@@ -300,7 +300,7 @@ class Mustache_Parser
      *
      * @param string $name
      */
-    private function enablePragma($name)
+    private function enablePragma(string $name) : void
     {
         $this->pragmas[$name] = true;
 

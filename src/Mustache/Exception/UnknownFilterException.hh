@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -14,18 +14,18 @@
  */
 class Mustache_Exception_UnknownFilterException extends UnexpectedValueException implements Mustache_Exception
 {
-    protected $filterName;
+    protected string $filterName = '';
 
     /**
      * @param string $filterName
      */
-    public function __construct($filterName)
+    public function __construct(string $filterName)
     {
         $this->filterName = $filterName;
         parent::__construct(sprintf('Unknown filter: %s', $filterName));
     }
 
-    public function getFilterName()
+    public function getFilterName() : string
     {
         return $this->filterName;
     }

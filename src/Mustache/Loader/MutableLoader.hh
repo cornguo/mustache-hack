@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -21,7 +21,7 @@ interface Mustache_Loader_MutableLoader
      *
      * @return void
      */
-    public function setTemplates(array $templates);
+    public function setTemplates(array<string, string> $templates) : void;
 
     /**
      * Set a Template source by name.
@@ -31,5 +31,5 @@ interface Mustache_Loader_MutableLoader
      *
      * @return void
      */
-    public function setTemplate($name, $template);
+    public function setTemplate(string $name, string $template) : void;
 }

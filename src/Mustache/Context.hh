@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -14,15 +14,15 @@
  */
 class Mustache_Context
 {
-    private $stack      = array();
-    private $blockStack = array();
+    private array $stack      = array();
+    private array $blockStack = array();
 
     /**
      * Mustache rendering Context constructor.
      *
      * @param mixed $context Default rendering context (default: null)
      */
-    public function __construct($context = null)
+    public function __construct(mixed $context = null) : void
     {
         if ($context !== null) {
             $this->stack = array($context);
@@ -34,7 +34,7 @@ class Mustache_Context
      *
      * @param mixed $value Object or array to use for context
      */
-    public function push($value)
+    public function push(mixed $value) : void
     {
         array_push($this->stack, $value);
     }
@@ -44,7 +44,7 @@ class Mustache_Context
      *
      * @param mixed $value Object or array to use for block context
      */
-    public function pushBlockContext($value)
+    public function pushBlockContext(mixed $value) : void
     {
         array_push($this->blockStack, $value);
     }
@@ -54,7 +54,7 @@ class Mustache_Context
      *
      * @return mixed Last Context frame (object or array)
      */
-    public function pop()
+    public function pop() : mixed
     {
         return array_pop($this->stack);
     }
@@ -64,7 +64,7 @@ class Mustache_Context
      *
      * @return mixed Last block Context frame (object or array)
      */
-    public function popBlockContext()
+    public function popBlockContext() : mixed
     {
         return array_pop($this->blockStack);
     }
@@ -74,7 +74,7 @@ class Mustache_Context
      *
      * @return mixed Last Context frame (object or array)
      */
-    public function last()
+    public function last() : mixed
     {
         return end($this->stack);
     }
@@ -94,7 +94,7 @@ class Mustache_Context
      *
      * @return mixed Variable value, or '' if not found
      */
-    public function find($id)
+    public function find(string $id) : mixed
     {
         return $this->findVariableInStack($id, $this->stack);
     }
@@ -124,7 +124,7 @@ class Mustache_Context
      *
      * @return mixed Variable value, or '' if not found
      */
-    public function findDot($id)
+    public function findDot(string $id) : mixed
     {
         $chunks = explode('.', $id);
         $first  = array_shift($chunks);
@@ -148,7 +148,7 @@ class Mustache_Context
      *
      * @return mixed Variable value, or '' if not found.
      */
-    public function findInBlock($id)
+    public function findInBlock(string $id) : mixed
     {
         foreach ($this->blockStack as $context) {
             if (array_key_exists($id, $context)) {
@@ -169,7 +169,7 @@ class Mustache_Context
      *
      * @return mixed Variable value, or '' if not found
      */
-    private function findVariableInStack($id, array $stack)
+    private function findVariableInStack(string $id, array $stack) : mixed
     {
         for ($i = count($stack) - 1; $i >= 0; $i--) {
             $frame = &$stack[$i];

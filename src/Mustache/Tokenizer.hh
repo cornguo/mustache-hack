@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -38,7 +38,7 @@ class Mustache_Tokenizer
     const T_BLOCK_ARG    = '$arg';
 
     // Valid token types
-    private static $tagTypes = array(
+    private static array<string, bool> $tagTypes = array(
         self::T_SECTION      => true,
         self::T_INVERTED     => true,
         self::T_END_SECTION  => true,
@@ -54,7 +54,7 @@ class Mustache_Tokenizer
     );
 
     // Interpolated tags
-    private static $interpolatedTags = array(
+    private static array<string, bool> $interpolatedTags = array(
         self::T_ESCAPED     => true,
         self::T_UNESCAPED   => true,
         self::T_UNESCAPED_2 => true,
@@ -73,17 +73,17 @@ class Mustache_Tokenizer
     const VALUE   = 'value';
     const FILTERS = 'filters';
 
-    private $state;
-    private $tagType;
-    private $tag;
-    private $buffer;
-    private $tokens;
-    private $seenTag;
-    private $line;
-    private $otag;
-    private $ctag;
-    private $otagLen;
-    private $ctagLen;
+    private int $state = 0;
+    private ?string $tagType = '';
+    private ?string $tag = '';
+    private string $buffer = '';
+    private array $tokens = array();
+    private ?int $seenTag = 0;
+    private int $line = 0;
+    private string $otag = '{{';
+    private string $ctag = '}}';
+    private int $otagLen = 2;
+    private int $ctagLen = 2;
 
     /**
      * Scan and tokenize template source.
@@ -95,7 +95,7 @@ class Mustache_Tokenizer
      *
      * @return array Set of Mustache tokens
      */
-    public function scan($text, $delimiters = null)
+    public function scan(string $text, ?string $delimiters = null) //: array
     {
         // Setting mbstring.func_overload makes things *really* slow.
         // Let's do everyone a favor and scan this string as ASCII instead.
@@ -163,7 +163,7 @@ class Mustache_Tokenizer
                             self::OTAG  => $this->otag,
                             self::CTAG  => $this->ctag,
                             self::LINE  => $this->line,
-                            self::INDEX => ($this->tagType === self::T_END_SECTION) ? $this->seenTag - $this->otagLen : $i + $this->ctagLen
+                            self::INDEX => ($this->tagType === self::T_END_SECTION) ? (int)$this->seenTag - $this->otagLen : $i + $this->ctagLen
                         );
 
                         if ($this->tagType === self::T_UNESCAPED) {
@@ -220,14 +220,14 @@ class Mustache_Tokenizer
     /**
      * Helper function to reset tokenizer internal state.
      */
-    private function reset()
+    private function reset() : void
     {
         $this->state   = self::IN_TEXT;
         $this->tagType = null;
         $this->tag     = null;
         $this->buffer  = '';
         $this->tokens  = array();
-        $this->seenTag = false;
+        $this->seenTag = 0;
         $this->line    = 0;
         $this->otag    = '{{';
         $this->ctag    = '}}';
@@ -238,7 +238,7 @@ class Mustache_Tokenizer
     /**
      * Flush the current buffer to a token.
      */
-    private function flushBuffer()
+    private function flushBuffer() : void
     {
         if (strlen($this->buffer) > 0) {
             $this->tokens[] = array(
@@ -258,7 +258,7 @@ class Mustache_Tokenizer
      *
      * @return int New index value
      */
-    private function changeDelimiters($text, $index)
+    private function changeDelimiters(string $text, int $index) : int
     {
         $startIndex = strpos($text, '=', $index) + 1;
         $close      = '='.$this->ctag;
@@ -279,7 +279,7 @@ class Mustache_Tokenizer
      *
      * @param string $delimiters
      */
-    private function setDelimiters($delimiters)
+    private function setDelimiters(string $delimiters) : void
     {
         list($otag, $ctag) = explode(' ', $delimiters);
         $this->otag = $otag;
@@ -299,7 +299,7 @@ class Mustache_Tokenizer
      *
      * @return int New index value
      */
-    private function addPragma($text, $index)
+    private function addPragma(string $text, int $index) : int
     {
         $end    = strpos($text, $this->ctag, $index);
         $pragma = trim(substr($text, $index + 2, $end - $index - 2));
@@ -324,7 +324,7 @@ class Mustache_Tokenizer
      *
      * @return boolean True if this is a closing section tag
      */
-    private function tagChange($tag, $tagLen, $text, $index)
+    private function tagChange(string $tag, int $tagLen, string $text, int $index) : bool
     {
         return substr($text, $index, $tagLen) === $tag;
     }

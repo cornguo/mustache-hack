@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -48,7 +48,7 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function emergency($message, array $context = array());
+    public function emergency(string $message, array $context = array()) : void;
 
     /**
      * Action must be taken immediately.
@@ -61,7 +61,7 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function alert($message, array $context = array());
+    public function alert(string $message, array $context = array()) : void;
 
     /**
      * Critical conditions.
@@ -73,7 +73,7 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function critical($message, array $context = array());
+    public function critical(string $message, array $context = array()) : void;
 
     /**
      * Runtime errors that do not require immediate action but should typically
@@ -84,7 +84,7 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function error($message, array $context = array());
+    public function error(string $message, array $context = array()) : void;
 
     /**
      * Exceptional occurrences that are not errors.
@@ -97,7 +97,7 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function warning($message, array $context = array());
+    public function warning(string $message, array $context = array()) : void;
 
     /**
      * Normal but significant events.
@@ -107,7 +107,7 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function notice($message, array $context = array());
+    public function notice(string $message, array $context = array()) : void;
 
     /**
      * Interesting events.
@@ -119,7 +119,7 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function info($message, array $context = array());
+    public function info(string $message, array $context = array()) : void;
 
     /**
      * Detailed debug information.
@@ -129,7 +129,7 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function debug($message, array $context = array());
+    public function debug(string $message, array $context = array()) : void;
 
     /**
      * Logs with an arbitrary level.
@@ -140,5 +140,5 @@ interface Mustache_Logger
      *
      * @return null
      */
-    public function log($level, $message, array $context = array());
+    public function log(mixed $level, string $message, array $context = array()) : void;
 }
