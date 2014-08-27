@@ -82,7 +82,7 @@ class Mustache_Loader_FilesystemLoader implements Mustache_Loader
             $this->templates[$name] = $this->loadFile($name);
         }
 
-        return $this->templates[$name];
+        return (string) $this->templates[$name];
     }
 
     /**

@@ -101,7 +101,7 @@ class Mustache_Loader_InlineLoader implements Mustache_Loader
             throw new Mustache_Exception_UnknownTemplateException($name);
         }
 
-        return $this->templates[$name];
+        return (string) $this->templates[$name];
     }
 
     /**

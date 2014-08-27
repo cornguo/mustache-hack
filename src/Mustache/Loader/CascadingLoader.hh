@@ -58,7 +58,7 @@ class Mustache_Loader_CascadingLoader implements Mustache_Loader
     {
         foreach ($this->loaders as $loader) {
             try {
-                return $loader->load($name);
+                return (string) $loader->load($name);
             } catch (Mustache_Exception_UnknownTemplateException $e) {
                 // do nothing, check the next loader.
             }

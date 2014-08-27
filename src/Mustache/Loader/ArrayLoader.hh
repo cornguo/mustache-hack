@@ -53,7 +53,7 @@ class Mustache_Loader_ArrayLoader implements Mustache_Loader, Mustache_Loader_Mu
             throw new Mustache_Exception_UnknownTemplateException($name);
         }
 
-        return $this->templates[$name];
+        return (string) $this->templates[$name];
     }
 
     /**
