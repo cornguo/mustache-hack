@@ -230,7 +230,7 @@ class Mustache_Compiler
 
         $callable = $this->strictCallables ? $this->prepare(self::STRICT_CALLABLE) : '';
 
-        return sprintf(format_i($this->prepare($klass, 0, false, true)), $name, $callable, $code, $sections);
+        return sprintf($this->prepare($klass, 0, false, true), $name, $callable, $code, $sections);
     }
 
     const BLOCK_VAR = '
@@ -259,7 +259,7 @@ class Mustache_Compiler
     {
         $id = var_export($id, true);
 
-        return sprintf(format_i($this->prepare(self::BLOCK_VAR, $level)), $id, $this->walk($nodes, 2));
+        return sprintf($this->prepare(self::BLOCK_VAR, $level), $id, $this->walk($nodes, 2));
     }
 
     const BLOCK_ARG = '
@@ -286,7 +286,7 @@ class Mustache_Compiler
         $key = $this->section($nodes, $id, array(), $start, $end, $otag, $ctag, $level, true);
         $id  = var_export($id, true);
 
-        return sprintf(format_i($this->prepare(self::BLOCK_ARG, $level)), $id, $key, $id, $this->flushIndent());
+        return sprintf($this->prepare(self::BLOCK_ARG, $level), $id, $key, $id, $this->flushIndent());
     }
 
     const SECTION_CALL = '
@@ -350,7 +350,7 @@ class Mustache_Compiler
         $key = ucfirst(md5($delims."\n".$source));
 
         if (!isset($this->sections[$key])) {
-            $this->sections[$key] = sprintf(format_i($this->prepare(self::SECTION)), $key, $callable, $source, $delims, $this->walk($nodes, 2));
+            $this->sections[$key] = sprintf($this->prepare(self::SECTION), $key, $callable, $source, $delims, $this->walk($nodes, 2));
         }
 
         if ($arg === true) {
@@ -360,7 +360,7 @@ class Mustache_Compiler
             $id      = var_export($id, true);
             $filters = $this->getFilters($filters, $level);
 
-            return sprintf(format_i($this->prepare(self::SECTION_CALL, $level)), $id, $method, $id, $filters, $key);
+            return sprintf($this->prepare(self::SECTION_CALL, $level), $id, $method, $id, $filters, $key);
         }
     }
 
@@ -387,7 +387,7 @@ class Mustache_Compiler
         $id      = var_export($id, true);
         $filters = $this->getFilters($filters, $level);
 
-        return sprintf(format_i($this->prepare(self::INVERTED_SECTION, $level)), $id, $method, $id, $filters, $this->walk($nodes, $level));
+        return sprintf($this->prepare(self::INVERTED_SECTION, $level), $id, $method, $id, $filters, $this->walk($nodes, $level));
     }
 
     const PARTIAL_INDENT = ', $indent . %s';
@@ -409,13 +409,13 @@ class Mustache_Compiler
     private function partial(string $id, string $indent, int $level) : string
     {
         if ($indent !== '') {
-            $indentParam = sprintf(format_i(self::PARTIAL_INDENT), var_export($indent, true));
+            $indentParam = sprintf(self::PARTIAL_INDENT, var_export($indent, true));
         } else {
             $indentParam = '';
         }
 
         return sprintf(
-            format_i($this->prepare(self::PARTIAL, $level)),
+            $this->prepare(self::PARTIAL, $level),
             var_export($id, true),
             $indentParam
         );
@@ -446,7 +446,7 @@ class Mustache_Compiler
         $realChildren = array_filter($children, array(__CLASS__, 'onlyBlockArgs'));
 
         return sprintf(
-            format_i($this->prepare(self::PARENT, $level)),
+            $this->prepare(self::PARENT, $level),
             $this->walk($realChildren, $level),
             var_export($id, true),
             var_export($indent, true)
@@ -487,7 +487,7 @@ class Mustache_Compiler
         $filters = $this->getFilters($filters, $level);
         $value   = $escape ? $this->getEscape() : '$value';
 
-        return sprintf(format_i($this->prepare(self::VARIABLE, $level)), $method, $id, $filters, $this->flushIndent(), $value);
+        return sprintf($this->prepare(self::VARIABLE, $level), $method, $id, $filters, $this->flushIndent(), $value);
     }
 
     const FILTER = '
@@ -518,7 +518,7 @@ class Mustache_Compiler
         $callable = $this->getCallable('$filter');
         $msg      = var_export($name, true);
 
-        return sprintf(format_i($this->prepare(self::FILTER, $level)), $method, $filter, $callable, $msg, $this->getFilters($filters, $level));
+        return sprintf($this->prepare(self::FILTER, $level), $method, $filter, $callable, $msg, $this->getFilters($filters, $level));
     }
 
     const LINE = '$buffer .= "\n";';
@@ -535,7 +535,7 @@ class Mustache_Compiler
     private function text(string $text, int $level) : string
     {
         $indentNextLine = (substr($text, -1) === "\n");
-        $code = sprintf(format_i($this->prepare(self::TEXT, $level)), $this->flushIndent(), var_export($text, true));
+        $code = sprintf($this->prepare(self::TEXT, $level), $this->flushIndent(), var_export($text, true));
         $this->indentNextLine = $indentNextLine;
 
         return $code;
@@ -577,10 +577,10 @@ class Mustache_Compiler
     private function getEscape(string $value = '$value') : string
     {
         if ($this->customEscape) {
-            return sprintf(format_i(self::CUSTOM_ESCAPE), $value);
+            return sprintf(self::CUSTOM_ESCAPE, $value);
         }
 
-        return sprintf(format_i(self::DEFAULT_ESCAPE), $value, var_export($this->entityFlags, true), var_export($this->charset, true));
+        return sprintf(self::DEFAULT_ESCAPE, $value, var_export($this->entityFlags, true), var_export($this->charset, true));
     }
 
     /**
@@ -623,7 +623,7 @@ class Mustache_Compiler
     {
         $tpl = $this->strictCallables ? self::STRICT_IS_CALLABLE : self::IS_CALLABLE;
 
-        return sprintf(format_i($tpl), $variable, $variable);
+        return sprintf($tpl, $variable, $variable);
     }
 
     const LINE_INDENT = '$indent . ';
