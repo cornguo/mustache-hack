@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -50,9 +50,9 @@
  */
 class Mustache_Loader_InlineLoader implements Mustache_Loader
 {
-    protected $fileName;
-    protected $offset;
-    protected $templates;
+    protected string $fileName;
+    protected int $offset;
+    protected array $templates = array();
 
     /**
      * The InlineLoader requires a filename and offset to process templates.
@@ -70,7 +70,7 @@ class Mustache_Loader_InlineLoader implements Mustache_Loader
      *                         This usually coincides with the `__halt_compiler`
      *                         call, and the `__COMPILER_HALT_OFFSET__`.
      */
-    public function __construct($fileName, $offset)
+    public function __construct(string $fileName, int $offset) : void
     {
         if (!is_file($fileName)) {
             throw new Mustache_Exception_InvalidArgumentException('InlineLoader expects a valid filename.');
@@ -93,7 +93,7 @@ class Mustache_Loader_InlineLoader implements Mustache_Loader
      *
      * @return string Mustache Template source
      */
-    public function load($name)
+    public function load(string $name) : string
     {
         $this->loadTemplates();
 
@@ -107,7 +107,7 @@ class Mustache_Loader_InlineLoader implements Mustache_Loader
     /**
      * Parse and load templates from the end of a source file.
      */
-    protected function loadTemplates()
+    protected function loadTemplates() : void
     {
         if ($this->templates === null) {
             $this->templates = array();

@@ -1,4 +1,4 @@
-<?php
+<?hh // strict
 
 /*
  * This file is part of Mustache.php.
@@ -32,7 +32,7 @@ class Mustache_Loader_StringLoader implements Mustache_Loader
      *
      * @return string Mustache Template source
      */
-    public function load($name)
+    public function load(string $name) : string
     {
         return $name;
     }

@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -26,9 +26,9 @@
  */
 class Mustache_Loader_FilesystemLoader implements Mustache_Loader
 {
-    private $baseDir;
-    private $extension = '.mustache';
-    private $templates = array();
+    private string $baseDir = '';
+    private string $extension = '.mustache';
+    private array $templates = array();
 
     /**
      * Mustache filesystem Loader constructor.
@@ -45,7 +45,7 @@ class Mustache_Loader_FilesystemLoader implements Mustache_Loader
      * @param string $baseDir Base directory containing Mustache template files.
      * @param array  $options Array of Loader options (default: array())
      */
-    public function __construct($baseDir, array $options = array())
+    public function __construct(string $baseDir, array $options = array()) : void
     {
         $this->baseDir = $baseDir;
 
@@ -76,7 +76,7 @@ class Mustache_Loader_FilesystemLoader implements Mustache_Loader
      *
      * @return string Mustache Template source
      */
-    public function load($name)
+    public function load(string $name) : string
     {
         if (!isset($this->templates[$name])) {
             $this->templates[$name] = $this->loadFile($name);
@@ -94,7 +94,7 @@ class Mustache_Loader_FilesystemLoader implements Mustache_Loader
      *
      * @return string Mustache Template source
      */
-    protected function loadFile($name)
+    protected function loadFile(string $name) : string
     {
         $fileName = $this->getFileName($name);
 
@@ -112,7 +112,7 @@ class Mustache_Loader_FilesystemLoader implements Mustache_Loader
      *
      * @return string Template file name
      */
-    protected function getFileName($name)
+    protected function getFileName(string $name) : string
     {
         $fileName = $this->baseDir . '/' . $name;
         if (substr($fileName, 0 - strlen($this->extension)) !== $this->extension) {

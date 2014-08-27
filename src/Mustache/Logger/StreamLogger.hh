@@ -1,4 +1,4 @@
-<?php
+<?hh // partial
 
 /*
  * This file is part of Mustache.php.
@@ -20,7 +20,7 @@
  */
 class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
 {
-    protected static $levels = array(
+    protected static array<mixed, int> $levels = array(
         self::DEBUG     => 100,
         self::INFO      => 200,
         self::NOTICE    => 250,
@@ -41,7 +41,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
      * @param resource|string $stream Resource instance or URL
      * @param integer         $level  The minimum logging level at which this handler will be triggered
      */
-    public function __construct($stream, $level = Mustache_Logger::ERROR)
+    public function __construct($stream, mixed $level = Mustache_Logger::ERROR) : void
     {
         $this->setLevel($level);
 
@@ -55,7 +55,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
     /**
      * Close stream resources.
      */
-    public function __destruct()
+    public function __destruct() : void
     {
         if (is_resource($this->stream)) {
             fclose($this->stream);
@@ -69,7 +69,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
      *
      * @param integer $level The minimum logging level which will be written
      */
-    public function setLevel($level)
+    public function setLevel(mixed $level) : void
     {
         if (!array_key_exists($level, self::$levels)) {
             throw new Mustache_Exception_InvalidArgumentException(sprintf('Unexpected logging level: %s', $level));
@@ -83,7 +83,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
      *
      * @return integer
      */
-    public function getLevel()
+    public function getLevel() : int
     {
         return $this->level;
     }
@@ -97,7 +97,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
      * @param string $message
      * @param array  $context
      */
-    public function log($level, $message, array $context = array())
+    public function log(mixed $level, string $message, array $context = array()) : void
     {
         if (!array_key_exists($level, self::$levels)) {
             throw new Mustache_Exception_InvalidArgumentException(sprintf('Unexpected logging level: %s', $level));
@@ -118,7 +118,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
      * @param string  $message The log message
      * @param array   $context The log context
      */
-    protected function writeLog($level, $message, array $context = array())
+    protected function writeLog(mixed $level, string $message, array $context = array()) : void
     {
         if (!is_resource($this->stream)) {
             if (!isset($this->url)) {
@@ -145,7 +145,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
      *
      * @return string
      */
-    protected static function getLevelName($level)
+    protected static function getLevelName(mixed $level) : string
     {
         return strtoupper($level);
     }
@@ -159,7 +159,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
      *
      * @return string
      */
-    protected static function formatLine($level, $message, array $context = array())
+    protected static function formatLine(mixed $level, string $message, array $context = array()) : string
     {
         return sprintf(
             "%s: %s\n",
@@ -176,7 +176,7 @@ class Mustache_Logger_StreamLogger extends Mustache_Logger_AbstractLogger
      *
      * @return string
      */
-    protected static function interpolateMessage($message, array $context = array())
+    protected static function interpolateMessage(string $message, array $context = array()) : string
     {
         if (strpos($message, '{') === false) {
             return $message;
