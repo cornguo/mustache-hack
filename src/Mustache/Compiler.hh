@@ -180,13 +180,13 @@ class Mustache_Compiler
         return $code;
     }
 
-    const KLASS = '<?php
+    const KLASS = '<?hh // partial
 
         class %s extends Mustache_Template
         {
             private $lambdaHelper;%s
 
-            public function renderInternal(Mustache_Context $context, $indent = \'\')
+            public function renderInternal(Mustache_Context $context, string $indent = \'\') : string
             {
                 $this->lambdaHelper = new Mustache_LambdaHelper($this->mustache, $context);
                 $buffer = \'\';
@@ -198,11 +198,11 @@ class Mustache_Compiler
         %s
         }';
 
-    const KLASS_NO_LAMBDAS = '<?php
+    const KLASS_NO_LAMBDAS = '<?hh // partial
 
         class %s extends Mustache_Template
         {%s
-            public function renderInternal(Mustache_Context $context, $indent = \'\')
+            public function renderInternal(Mustache_Context $context, string $indent = \'\') : string
             {
                 $buffer = \'\';
                 $newContext = array();

@@ -87,7 +87,7 @@ class Mustache_Cache_FilesystemCache extends Mustache_Cache_AbstractCache
      */
     protected function getCacheFilename(string $name) : string
     {
-        return sprintf('%s/%s.php', $this->baseDir, $name);
+        return sprintf('%s/%s.hh', $this->baseDir, $name);
     }
 
     /**
