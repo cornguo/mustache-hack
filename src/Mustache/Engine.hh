@@ -212,7 +212,7 @@ class Mustache_Engine
      *
      * @return string Rendered template
      */
-    public function render(string $template, array $context = array()) : string
+    public function render(string $template, mixed $context = array()) : string
     {
         return $this->loadTemplate($template)->render($context);
     }
